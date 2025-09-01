@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-file-contents-reader"
+version = "1.0.1"
+description = "MCP (Model Context Protocol) server for reading and analyzing various file formats including PDF, Excel, Word, and PowerPoint"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "MCP File Reader Team", email = "contact@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "mcp>=1.0.0",
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+    "PyPDF2>=3.0.0",
+    "python-pptx>=0.6.21",
+    "python-docx>=0.8.11",
+    "aiofiles>=23.0.0",
+    "pydantic>=2.0.0",
+    "reportlab>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+mcp-file-contents-reader = "mcp_file_contents_reader.server:cli_main"
+
+[project.urls]
+Homepage = "https://github.com/mcp-file-reader/mcp-file-reader"
+Repository = "https://github.com/mcp-file-reader/mcp-file-reader"
+Issues = "https://github.com/mcp-file-reader/mcp-file-reader/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mcp_file_contents_reader*"]
+
+[tool.setuptools.package-data]
+mcp_file_contents_reader = ["*.py"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

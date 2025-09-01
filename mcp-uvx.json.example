@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "file-reader": {
+      "command": "uvx",
+      "args": ["mcp-file-reader"],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}
