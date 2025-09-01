@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcp-file-contents-reader"
-version = "1.0.1"
+version = "1.0.5"
 description = "MCP (Model Context Protocol) server for reading and analyzing various file formats including PDF, Excel, Word, and PowerPoint"
 readme = "README.md"
 license = "MIT"
@@ -46,6 +46,9 @@ dev = [
 
 [project.scripts]
 mcp-file-contents-reader = "mcp_file_contents_reader.server:cli_main"
+
+[project.gui-scripts]
+mcp-file-contents-reader-gui = "mcp_file_contents_reader.server:cli_main"
 
 [project.urls]
 Homepage = "https://github.com/mcp-file-reader/mcp-file-reader"

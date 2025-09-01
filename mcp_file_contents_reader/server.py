@@ -14,6 +14,7 @@ import aiofiles
 from mcp.server import Server
 from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
+from mcp.server.lowlevel import NotificationOptions
 from mcp.types import (
     CallToolRequest,
     CallToolResult,
@@ -674,7 +675,10 @@ class FileReaderServer:
                 InitializationOptions(
                     server_name="mcp-file-reader",
                     server_version="1.0.0",
-                    capabilities=self.server.get_capabilities(),
+                    capabilities=self.server.get_capabilities(
+                        notification_options=NotificationOptions(),
+                        experimental_capabilities={}
+                    ),
                 ),
             )
 
