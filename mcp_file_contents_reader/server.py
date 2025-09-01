@@ -63,162 +63,161 @@ class FileReaderServer:
     def _setup_handlers(self):
         
         @self.server.list_tools()
-        async def list_tools() -> ListToolsResult:
-            return ListToolsResult(
-                tools=[
-                    Tool(
-                        name="read_file",
-                        description="Read Excel, PDF, PPT, Word files and return content as text.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {
-                                "file_path": {
-                                    "type": "string",
-                                    "description": "Path to the file to read"
-                                },
-                                "sheet_name": {
-                                    "type": "string",
-                                    "description": "Sheet name for Excel files (optional)"
-                                },
-                                "page_range": {
-                                    "type": "string",
-                                    "description": "Page range for PDF files (e.g., '1-5' or '1,3,5') (optional)"
-                                }
+        async def list_tools() -> List[Tool]:
+            # Return list of tools directly, not ListToolsResult
+            return [
+                Tool(
+                    name="read_file",
+                    description="Read Excel, PDF, PPT, Word files and return content as text.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "file_path": {
+                                "type": "string",
+                                "description": "Path to the file to read"
                             },
-                            "required": ["file_path"]
-                        }
-                    ),
-                    Tool(
-                        name="list_supported_formats",
-                        description="Return list of supported file formats.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {}
-                        }
-                    ),
-                    Tool(
-                        name="get_file_info",
-                        description="Return basic information about a file.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {
-                                "file_path": {
-                                    "type": "string",
-                                    "description": "Path to the file to get information about"
-                                }
+                            "sheet_name": {
+                                "type": "string",
+                                "description": "Sheet name for Excel files (optional)"
                             },
-                            "required": ["file_path"]
-                        }
-                    ),
-                    Tool(
-                        name="upload_file",
-                        description="Upload and temporarily store Base64 encoded file data.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {
-                                "file_data": {
-                                    "type": "string",
-                                    "description": "Base64 encoded file data"
-                                },
-                                "filename": {
-                                    "type": "string",
-                                    "description": "Filename with extension"
-                                }
+                            "page_range": {
+                                "type": "string",
+                                "description": "Page range for PDF files (e.g., '1-5' or '1,3,5') (optional)"
+                            }
+                        },
+                        "required": ["file_path"]
+                    }
+                ),
+                Tool(
+                    name="list_supported_formats",
+                    description="Return list of supported file formats.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {}
+                    }
+                ),
+                Tool(
+                    name="get_file_info",
+                    description="Return basic information about a file.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "file_path": {
+                                "type": "string",
+                                "description": "Path to the file to get information about"
+                            }
+                        },
+                        "required": ["file_path"]
+                    }
+                ),
+                Tool(
+                    name="upload_file",
+                    description="Upload and temporarily store Base64 encoded file data.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "file_data": {
+                                "type": "string",
+                                "description": "Base64 encoded file data"
                             },
-                            "required": ["file_data", "filename"]
-                        }
-                    ),
-                    Tool(
-                        name="read_uploaded_file",
-                        description="Read uploaded file and return content.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {
-                                "file_id": {
-                                    "type": "string",
-                                    "description": "ID of the uploaded file"
-                                },
-                                "sheet_name": {
-                                    "type": "string",
-                                    "description": "Sheet name for Excel files (optional)"
-                                },
-                                "page_range": {
-                                    "type": "string",
-                                    "description": "Page range for PDF files (e.g., '1-5' or '1,3,5') (optional)"
-                                }
+                            "filename": {
+                                "type": "string",
+                                "description": "Filename with extension"
+                            }
+                        },
+                        "required": ["file_data", "filename"]
+                    }
+                ),
+                Tool(
+                    name="read_uploaded_file",
+                    description="Read uploaded file and return content.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "file_id": {
+                                "type": "string",
+                                "description": "ID of the uploaded file"
                             },
-                            "required": ["file_id"]
-                        }
-                    ),
-                    Tool(
-                        name="list_uploaded_files",
-                        description="Return list of uploaded files.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {}
-                        }
-                    ),
-                    Tool(
-                        name="delete_uploaded_file",
-                        description="Delete uploaded file.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {
-                                "file_id": {
-                                    "type": "string",
-                                    "description": "ID of the file to delete"
-                                }
+                            "sheet_name": {
+                                "type": "string",
+                                "description": "Sheet name for Excel files (optional)"
                             },
-                            "required": ["file_id"]
-                        }
-                    ),
-                    Tool(
-                        name="search_documents",
-                        description="Search for specific content in Documents directory and analyze files.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {
-                                "search_path": {
-                                    "type": "string",
-                                    "description": "Directory path to search (default: ~/Documents)",
-                                    "default": "~/Documents"
-                                },
-                                "keywords": {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                    "description": "Keywords to search for in file content"
-                                },
-                                "file_types": {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                    "description": "File types to search (pdf, docx, xlsx, pptx, etc.)",
-                                    "default": ["pdf", "docx", "xlsx", "pptx", "doc", "xls", "ppt"]
-                                }
+                            "page_range": {
+                                "type": "string",
+                                "description": "Page range for PDF files (e.g., '1-5' or '1,3,5') (optional)"
+                            }
+                        },
+                        "required": ["file_id"]
+                    }
+                ),
+                Tool(
+                    name="list_uploaded_files",
+                    description="Return list of uploaded files.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {}
+                    }
+                ),
+                Tool(
+                    name="delete_uploaded_file",
+                    description="Delete uploaded file.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "file_id": {
+                                "type": "string",
+                                "description": "ID of the file to delete"
+                            }
+                        },
+                        "required": ["file_id"]
+                    }
+                ),
+                Tool(
+                    name="search_documents",
+                    description="Search for specific content in Documents directory and analyze files.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "search_path": {
+                                "type": "string",
+                                "description": "Directory path to search (default: ~/Documents)",
+                                "default": "~/Documents"
                             },
-                            "required": ["keywords"]
-                        }
-                    ),
-                    Tool(
-                        name="analyze_file_content",
-                        description="Analyze specific file content in detail and extract structured information.",
-                        inputSchema={
-                            "type": "object",
-                            "properties": {
-                                "file_path": {
-                                    "type": "string",
-                                    "description": "Path to the file to analyze"
-                                },
-                                "extract_patterns": {
-                                    "type": "array",
-                                    "items": {"type": "string"},
-                                    "description": "Specific patterns or information types to extract (optional)"
-                                }
+                            "keywords": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "Keywords to search for in file content"
                             },
-                            "required": ["file_path"]
-                        }
-                    )
-                ]
-            )
+                            "file_types": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "File types to search (pdf, docx, xlsx, pptx, etc.)",
+                                "default": ["pdf", "docx", "xlsx", "pptx", "doc", "xls", "ppt"]
+                            }
+                        },
+                        "required": ["keywords"]
+                    }
+                ),
+                Tool(
+                    name="analyze_file_content",
+                    description="Analyze specific file content in detail and extract structured information.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "file_path": {
+                                "type": "string",
+                                "description": "Path to the file to analyze"
+                            },
+                            "extract_patterns": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "Specific patterns or information types to extract (optional)"
+                            }
+                        },
+                        "required": ["file_path"]
+                    }
+                )
+            ]
         
         @self.server.call_tool()
         async def call_tool(name: str, arguments: Dict[str, Any]) -> CallToolResult:
