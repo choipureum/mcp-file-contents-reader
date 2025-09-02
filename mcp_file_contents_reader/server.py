@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 
 import asyncio
 import base64
@@ -18,10 +18,8 @@ from .file_handlers import ExcelHandler, PDFHandler, PPTHandler, WordHandler, Fi
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# FastMCP 인스턴스 생성
 mcp = FastMCP(name="mcp-file-reader")
 
-# 파일 핸들러 초기화
 handlers = {
     'xlsx': ExcelHandler(),
     'xls': ExcelHandler(),
@@ -32,7 +30,6 @@ handlers = {
     'doc': WordHandler(),
 }
 
-# 임시 디렉토리 설정
 temp_dir = Path(tempfile.gettempdir()) / "mcp-file-reader"
 temp_dir.mkdir(exist_ok=True)
 uploaded_files: Dict[str, Dict[str, Any]] = {}
@@ -217,21 +214,18 @@ async def search_documents(keywords: List[str], search_path: str = "~/Documents"
         return "Keywords are required for search."
     
     try:
-        # Expand tilde in path
         search_path = os.path.expanduser(search_path)
         search_path = Path(search_path)
         
         if not search_path.exists():
             return f"Search path does not exist: {search_path}"
         
-        # Find files with specified extensions
         found_files = []
         for file_type in file_types:
             pattern = f"**/*.{file_type}"
             files = list(search_path.glob(pattern))
             found_files.extend(files)
         
-        # Remove duplicates and filter out node_modules
         found_files = list(set([f for f in found_files if "node_modules" not in str(f)]))
         
         result_text = f"🔍 Searching in: {search_path}\n"
@@ -240,26 +234,22 @@ async def search_documents(keywords: List[str], search_path: str = "~/Documents"
         
         matching_files = []
         
-        for file_path in found_files[:20]:  # Limit to first 20 files
+        for file_path in found_files[:20]:
             try:
-                # Read file content
                 with open(file_path, 'rb') as f:
                     file_bytes = f.read()
                 file_data = base64.b64encode(file_bytes).decode('utf-8')
                 
-                # Upload file to server
                 upload_result = await upload_file(file_data, file_path.name)
                 
                 if "File ID:" in upload_result:
                     file_id = upload_result.split("File ID:")[1].split("\n")[0].strip()
                     
-                    # Read file content
                     read_result = await read_uploaded_file(file_id)
                     
                     if "File content:" in read_result:
                         content = read_result.split("File content:")[1].strip()
                         
-                        # Search for keywords
                         found_keywords = []
                         for keyword in keywords:
                             if keyword.lower() in content.lower():
@@ -273,13 +263,11 @@ async def search_documents(keywords: List[str], search_path: str = "~/Documents"
                                 'content_preview': content[:300] + "..." if len(content) > 300 else content
                             })
                         
-                        # Clean up uploaded file
                         await delete_uploaded_file(file_id)
                         
             except Exception as e:
                 continue
         
-        # Format results
         if matching_files:
             result_text += f"🎯 Found {len(matching_files)} file(s) with matching content:\n\n"
             for i, file_info in enumerate(matching_files, 1):
@@ -307,18 +295,15 @@ async def analyze_file_content(file_path: str, extract_patterns: List[str] = Non
         if not file_path_obj.exists():
             return f"File not found: {file_path}"
         
-        # Read file content
         with open(file_path, 'rb') as f:
             file_bytes = f.read()
         file_data = base64.b64encode(file_bytes).decode('utf-8')
         
-        # Upload file to server
         upload_result = await upload_file(file_data, file_path_obj.name)
         
         if "File ID:" in upload_result:
             file_id = upload_result.split("File ID:")[1].split("\n")[0].strip()
             
-            # Read file content
             read_result = await read_uploaded_file(file_id)
             
             if "File content:" in read_result:
@@ -333,7 +318,6 @@ async def analyze_file_content(file_path: str, extract_patterns: List[str] = Non
                 result_text += content + "\n"
                 result_text += "=" * 60 + "\n\n"
                 
-                # Extract structured information if patterns provided
                 if extract_patterns:
                     result_text += "🔍 EXTRACTED INFORMATION:\n"
                     result_text += "=" * 60 + "\n"
@@ -356,7 +340,6 @@ async def analyze_file_content(file_path: str, extract_patterns: List[str] = Non
                         else:
                             result_text += f"\n📌 {pattern.upper()}: No matches found\n"
                 
-                # Clean up uploaded file
                 await delete_uploaded_file(file_id)
                 
                 return result_text

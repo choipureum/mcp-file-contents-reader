@@ -18,5 +18,5 @@ __version__ = "1.0.20"
 __author__ = "MCP File Reader Team"
 __email__ = "contact@example.com"
 
-# MCP 서버는 직접 실행해야 하므로 여기서는 import하지 않음
+
 __all__ = []
