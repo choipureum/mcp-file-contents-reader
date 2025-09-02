@@ -7,6 +7,7 @@ import base64
 import tempfile
 import uuid
 import os
+import sys
 import glob
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -667,27 +668,47 @@ class FileReaderServer:
             )
     
     async def run(self):
-        async with stdio_server() as (read_stream, write_stream):
-            await self.server.run(
-                read_stream,
-                write_stream,
-                InitializationOptions(
-                    server_name="mcp-file-reader",
-                    server_version="1.0.0",
-                    capabilities=self.server.get_capabilities(
-                        notification_options=NotificationOptions(),
-                        experimental_capabilities={}
-                    ),
-                ),
-            )
+        try:
+            async with stdio_server() as (read_stream, write_stream):
+                try:
+                    await self.server.run(
+                        read_stream,
+                        write_stream,
+                        InitializationOptions(
+                            server_name="mcp-file-reader",
+                            server_version="1.0.0",
+                            capabilities=self.server.get_capabilities(
+                                notification_options=NotificationOptions(),
+                                experimental_capabilities={}
+                            ),
+                        ),
+                    )
+                except Exception as inner_e:
+                    logger.error(f"Inner server error: {inner_e}")
+                    # Don't re-raise to avoid double exception handling
+        except Exception as e:
+            logger.error(f"Server error: {e}")
+            # Don't raise to prevent unhandled exceptions
 
 async def main():
-    server = FileReaderServer()
-    await server.run()
+    try:
+        server = FileReaderServer()
+        await server.run()
+    except KeyboardInterrupt:
+        logger.info("Server interrupted by user")
+    except Exception as e:
+        logger.error(f"Server failed: {e}")
+        raise
 
 def cli_main():
     """Entry point for the command line interface."""
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        pass
+    except Exception as e:
+        logger.error(f"CLI error: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     cli_main()
