@@ -18,6 +18,5 @@ __version__ = "1.0.0"
 __author__ = "Your Name"
 __email__ = "your.email@example.com"
 
-from .server import FileReaderServer
-
-__all__ = ["FileReaderServer"]
+# MCP 서버는 직접 실행해야 하므로 여기서는 import하지 않음
+__all__ = []

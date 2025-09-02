@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 import pandas as pd
-import PyPDF2
+import pypdf
 from pptx import Presentation
 from docx import Document
 import aiofiles
@@ -76,7 +76,7 @@ class PDFHandler(BaseFileHandler):
             def read_pdf():
                 try:
                     with open(file_path, 'rb') as file:
-                        pdf_reader = PyPDF2.PdfReader(file)
+                        pdf_reader = pypdf.PdfReader(file)
                         total_pages = len(pdf_reader.pages)
                         
                         pages_to_read = self._parse_page_range(page_range, total_pages)
