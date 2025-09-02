@@ -1,6 +1,6 @@
 # MCP File Contents Reader
 
-A Model Context Protocol (MCP) server for reading and analyzing various file formats including PDF, Excel, Word, and PowerPoint documents.
+A Model Context Protocol (MCP) server for reading and analyzing various file formats including <b>PDF, Excel, Word, and PowerPoint documents</b>.
 
 ## Features
 
