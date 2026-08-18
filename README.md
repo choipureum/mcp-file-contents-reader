@@ -1,3 +1,5 @@
+
+
 # MCP File Contents Reader
 
 A Model Context Protocol (MCP) server for reading and analyzing various file formats including <b>PDF, Excel, Word, and PowerPoint documents</b>.
@@ -27,7 +29,7 @@ pip install mcp-file-contents-reader
 ### From Source
 
 ```bash
-git clone https://github.com/yourusername/mcp-file-contents-reader.git
+git clone https://github.com/choipureum/mcp-file-contents-reader.git
 cd mcp-file-contents-reader
 pip install -e .
 ```
@@ -172,7 +174,7 @@ Return list of supported file formats.
 ### Setup Development Environment
 
 ```bash
-git clone https://github.com/yourusername/mcp-file-contents-reader.git
+git clone https://github.com/choipureum/mcp-file-contents-reader.git
 cd mcp-file-contents-reader
 pip install -e ".[dev]"
 ```
